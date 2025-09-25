@@ -152,3 +152,51 @@ Byte* desencriptar(const Byte* encrypted, int len, int n, Byte k) {
     }
     return decrypted;
 }
+// Leer archivo binario
+Byte* leerArchivoBinario(const char* nombre, int& tamano) {
+    ifstream archivo(nombre, ios::binary | ios::ate);
+    if (!archivo) return nullptr;
+
+    tamano = archivo.tellg();
+    archivo.seekg(0, ios::beg);
+
+    Byte* datos = new Byte[tamano];
+    archivo.read(reinterpret_cast<char*>(datos), tamano);
+    archivo.close();
+
+    return datos;
+}
+
+// Leer archivo de texto
+char* leerArchivoTexto(const char* nombre, int& tamano) {
+    ifstream archivo(nombre, ios::ate);
+    if (!archivo) return nullptr;
+
+    tamano = archivo.tellg();
+    archivo.seekg(0, ios::beg);
+
+    char* datos = new char[tamano + 1];
+    archivo.read(datos, tamano);
+    datos[tamano] = '\0';
+    archivo.close();
+
+    return datos;
+}
+
+// Verificar si el texto contiene el fragmento
+bool contieneFragmento(const char* texto, int tamTexto, const char* fragmento, int tamFrag) {
+    if (tamFrag == 0) return true;
+    if (tamTexto < tamFrag) return false;
+
+    for (int i = 0; i <= tamTexto - tamFrag; i++) {
+        bool coincide = true;
+        for (int j = 0; j < tamFrag; j++) {
+            if (texto[i + j] != fragmento[j]) {
+                coincide = false;
+                break;
+            }
+        }
+        if (coincide) return true;
+    }
+    return false;
+}
