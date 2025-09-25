@@ -200,3 +200,41 @@ bool contieneFragmento(const char* texto, int tamTexto, const char* fragmento, i
     }
     return false;
 }
+//Logica pricipal resolucion
+bool resolverCaso(const Byte* encriptado, int tamEnc, const char* pista, int tamPista,
+                  int& metodo, int& rotacion, int& clave, char*& textoOriginal, int& tamOriginal) {
+
+    for (int met = 0; met < 2; met++) { // 0: RLE, 1: LZ78
+        for (int rot = 1; rot <= 7; rot++) {
+            for (int k = 0; k < 256; k++) {
+
+                Byte* desencriptado = desencriptar(encriptado, tamEnc, rot, (Byte)k);
+
+                char* textoDecomp = nullptr;
+                int tamDecomp = 0;
+
+                if (met == 0) {
+                    textoDecomp = descomprimirRLE(desencriptado, tamEnc, tamDecomp);
+                } else {
+                    textoDecomp = descomprimirLZ78(desencriptado, tamEnc, tamDecomp);
+                }
+
+                delete[] desencriptado;
+
+                if (textoDecomp != nullptr && contieneFragmento(textoDecomp, tamDecomp, pista, tamPista)) {
+                    metodo = met;
+                    rotacion = rot;
+                    clave = k;
+                    textoOriginal = textoDecomp;
+                    tamOriginal = tamDecomp;
+                    return true;
+                }
+
+                if (textoDecomp != nullptr) {
+                    delete[] textoDecomp;
+                }
+            }
+        }
+    }
+    return false;
+}
