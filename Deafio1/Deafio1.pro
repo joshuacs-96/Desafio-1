@@ -6,3 +6,6 @@ CONFIG -= qt
 SOURCES += \
         Funtions.cpp \
         main.cpp
+
+HEADERS += \
+    Funtions.h

@@ -1,4 +1,5 @@
 #include <iostream>
+#include "Funtions.h"
 #include <fstream>
 #include <cstdio> // Para sprintf
 #include <cstdlib> // Para new y delete

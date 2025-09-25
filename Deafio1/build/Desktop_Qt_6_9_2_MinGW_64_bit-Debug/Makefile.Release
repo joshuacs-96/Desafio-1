@@ -55,7 +55,7 @@ SOURCES       = ..\..\Funtions.cpp \
 OBJECTS       = release/Funtions.o \
 		release/main.o
 
-DIST          =   ..\..\Funtions.cpp \
+DIST          =  Funtions.h ..\..\Funtions.cpp \
 		..\..\main.cpp
 QMAKE_TARGET  = Deafio1
 DESTDIR        = release\ #avoid trailing-slash linebreak
@@ -104,10 +104,10 @@ compiler_clean:
 
 ####### Compile
 
-release/Funtions.o: ../../Funtions.cpp 
+release/Funtions.o: ../../Funtions.cpp ../../Funtions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\Funtions.o ..\..\Funtions.cpp
 
-release/main.o: ../../main.cpp 
+release/main.o: ../../main.cpp ../../Funtions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o ..\..\main.cpp
 
 ####### Install
