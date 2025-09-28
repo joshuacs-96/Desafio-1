@@ -1,8 +1,9 @@
 #include <iostream>
-#include <fstream>
+//#include <fstream>
 #include <cstdio> // Para sprintf
-#include <cstdlib> // Para new y delete
+#include <cstdlib> // Para free
 #include "Funtions.h"
+
 using namespace std;
 
 int main() {
@@ -19,10 +20,12 @@ int main() {
         Byte* encriptado = leerArchivoBinario(nombreEnc, tamEnc);
         char* pista = leerArchivoTexto(nombrePista, tamPista);
 
+        if (pista) limpiarFinalCRLF(pista, tamPista);
+
         if (!encriptado || !pista) {
             cout << "Error leyendo archivos para caso " << caso << endl;
-            if (encriptado) delete[] encriptado;
-            if (pista) delete[] pista;
+            if (encriptado) free(encriptado);
+            if (pista) free(pista);
             continue;
         }
 
@@ -37,20 +40,25 @@ int main() {
             cout << "Metodo de compresion: " << (metodo == 0 ? "RLE" : "LZ78") << endl;
             cout << "Rotacion: " << rotacion << " bits" << endl;
             cout << "Clave XOR: 0x" << hex << clave << dec << endl;
+            char hexbuf[8];
+            sprintf(hexbuf, "%02X", clave & 0xFF);
+            cout << hexbuf << endl;
             cout << "\nTexto original reconstruido:" << endl;
             // Para no imprimir un texto potencialmente enorme, solo se imprimen los primeros 100 caracteres.
             for (int i = 0; i < 100 && i < tamOriginal; i++) {
                 cout << textoOriginal[i];
             }
-            cout << "..." << endl;
+            if (tamOriginal > 100) cout << "...";
+            cout << endl;
 
-            delete[] textoOriginal;
+            free(textoOriginal);
         } else {
             cout << "No se pudo resolver el caso" << endl;
+            cout << "Verifique formato RLE (ASCII) o LZ78 (Big-Endian).\n";
         }
 
-        delete[] encriptado;
-        delete[] pista;
+        free(encriptado);
+        free(pista);
     }
 
     return 0;
